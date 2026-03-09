@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Qazaq Meme Vision</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="page">
+    <header class="hero">
+      <h1 class="title">Qazaq Meme Vision 🤙</h1>
+      <p class="subtitle">See which meme matches your expression</p>
+    </header>
+
+    <!-- Horizontal layout: camera left, meme right -->
+    <main class="main">
+      <!-- Left panel: Camera -->
+      <section class="panel camera-panel">
+        <h2 class="panel-title">Camera</h2>
+        <div class="camera-wrapper">
+          <video id="webcam" autoplay playsinline muted></video>
+          <canvas id="capture-canvas" hidden></canvas>
+          <div id="camera-placeholder" class="camera-placeholder">
+            <span class="placeholder-text">Click "Turn Camera On" to start</span>
+          </div>
+        </div>
+        <div class="camera-controls">
+          <button id="camera-on-btn" class="btn btn-primary">Turn Camera On</button>
+          <button id="camera-off-btn" class="btn btn-secondary" disabled>Turn Camera Off</button>
+        </div>
+      </section>
+
+      <!-- Right panel: Meme result (or placeholder) -->
+      <section class="panel meme-panel">
+        <h2 class="panel-title">Your Meme</h2>
+        <!-- Calm placeholder when no confident prediction -->
+        <div id="placeholder" class="meme-placeholder">
+          <p class="placeholder-message">Make a pose!</p>
+          <p class="placeholder-hint">salam · sleep · hmm · cat-tongue</p>
+        </div>
+        <!-- Result: meme + class + confidence -->
+        <div id="result" class="meme-result hidden">
+          <div id="result-meme" class="result-meme">
+            <!-- img injected by JS -->
+          </div>
+          <p id="result-class" class="result-class"></p>
+          <p id="result-confidence" class="result-confidence"></p>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p>Real-time meme mirror · confidence threshold 75%</p>
+    </footer>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

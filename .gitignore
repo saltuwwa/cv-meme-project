@@ -1,0 +1,37 @@
+# Virtual environment
+venv/
+.env
+.venv/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+.eggs/
+dist/
+build/
+
+# Model checkpoints (large, train locally)
+models/*.pth
+models/*.pt
+!models/.gitkeep
+
+# Dataset — фото датасет для обучения (salam, sleep, hmm, cat-tongue, train, val)
+dataset/*
+!dataset/.gitkeep
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
