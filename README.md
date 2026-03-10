@@ -86,7 +86,7 @@ Creates `dataset/train/` and `dataset/val/` (80% / 20%).
 python scripts/train.py
 ```
 
-- ResNet18 + transfer learning, 10 epochs  
+- ResNet18 + transfer learning, 15 epochs  
 - Best model saved to `models/meme_classifier.pth`
 
 ### 5. Run web app
