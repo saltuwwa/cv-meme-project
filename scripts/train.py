@@ -21,7 +21,7 @@ import torch.nn as nn
 from torch.utils.data import DataLoader
 from torchvision import datasets, models, transforms
 
-# ============ КОНФИГУРАЦИЯ ============
+# КОНФИГУРАЦИЯ
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 DATASET_ROOT = PROJECT_ROOT / "dataset"
 TRAIN_DIR = DATASET_ROOT / "train"
@@ -31,7 +31,7 @@ MODEL_SAVE_PATH = PROJECT_ROOT / "models" / "meme_classifier.pth"
 CLASSES = ["salam", "sleep", "hmm", "cat-tongue"]
 NUM_CLASSES = len(CLASSES)
 BATCH_SIZE = 32
-EPOCHS = 10
+EPOCHS = 15
 LEARNING_RATE = 1e-3
 # Для воспроизводимости
 TORCH_SEED = 42
@@ -56,7 +56,9 @@ def get_transforms():
         transforms.Resize((IMG_SIZE, IMG_SIZE)),
         transforms.RandomHorizontalFlip(p=0.5),
         transforms.RandomRotation(15),
-        transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2),
+        # Сильнее по освещению — модель лучше обобщает на разный свет
+        transforms.ColorJitter(brightness=0.5, contrast=0.5, saturation=0.4),
+        transforms.RandomGrayscale(p=0.1),  # иногда ч/б — меньше зависимость от цвета
         transforms.ToTensor(),
         transforms.Normalize(
             mean=[0.485, 0.456, 0.406],

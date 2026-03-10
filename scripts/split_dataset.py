@@ -15,7 +15,7 @@ import random
 import shutil
 from pathlib import Path
 
-# ============ КОНФИГУРАЦИЯ ============
+#  КОНФИГУРАЦИЯ
 # Папка с исходными данными (классы в подпапках)
 DATASET_ROOT = Path(__file__).resolve().parent.parent / "dataset"
 # Соотношение train/val (0.8 = 80% на обучение, 20% на валидацию)

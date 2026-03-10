@@ -180,9 +180,3 @@ git push -u origin main
 
 **Ignored by .gitignore:** `venv/`, `dataset/` contents, `models/*.pth`, `__pycache__/`.  
 Add your dataset locally and train the model before running the web app.
-
----
-
-## License
-
-MIT
