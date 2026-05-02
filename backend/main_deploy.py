@@ -39,7 +39,7 @@ async def health():
 @app.get("/", response_class=HTMLResponse)
 async def index(request: Request):
     """Deploy UI (instruction card + webcam demo)."""
-    return templates.TemplateResponse("index_deploy.html", {"request": request})
+    return templates.TemplateResponse(request=request, name="index_deploy.html")
 
 
 @app.post("/predict")
