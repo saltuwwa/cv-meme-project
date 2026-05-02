@@ -1,18 +1,29 @@
 /**
  * Deploy frontend — webcam polling to POST /predict.
+ * Optimized for Render Free: fewer requests, smaller JPEG payloads.
  */
 
 (function () {
   'use strict';
 
-  const POLL_INTERVAL_MS = 1000;
+  const POLL_INTERVAL_MS = 2500;
   const CONFIDENCE_THRESHOLD = 0.75;
+
+  /** Downscaled capture — less bandwidth & CPU on server */
+  const CAPTURE_WIDTH = 320;
+  const CAPTURE_HEIGHT = 240;
+  const JPEG_QUALITY = 0.78;
+
+  const MSG_PREDICTING = 'Predicting...';
+  const MSG_WARMUP =
+    'Warming up model... first prediction may take a few seconds.';
 
   const webcam = document.getElementById('webcam');
   const captureCanvas = document.getElementById('capture-canvas');
   const cameraPlaceholder = document.getElementById('camera-placeholder');
   const cameraOnBtn = document.getElementById('camera-on-btn');
   const cameraOffBtn = document.getElementById('camera-off-btn');
+  const predictionStatus = document.getElementById('prediction-status');
   const placeholder = document.getElementById('placeholder');
   const placeholderMessage = document.getElementById('placeholder-message');
   const result = document.getElementById('result');
@@ -23,10 +34,23 @@
   let stream = null;
   let pollTimerId = null;
   let isRequestInFlight = false;
+  /** True until the first POST /predict completes after camera on */
+  let awaitingFirstPrediction = false;
 
   const LOW_CONF_MESSAGE = 'Make one of the 4 poses clearly.';
   const CAMERA_DENIED_HTML =
     '<span class="placeholder-text">We need camera access to run the demo. Please allow the camera in your browser settings and try again.</span>';
+
+  function setPredictionStatusVisible(show, text) {
+    if (!predictionStatus) return;
+    if (show && text) {
+      predictionStatus.textContent = text;
+      predictionStatus.classList.remove('hidden');
+    } else {
+      predictionStatus.textContent = '';
+      predictionStatus.classList.add('hidden');
+    }
+  }
 
   async function turnCameraOn() {
     try {
@@ -38,6 +62,7 @@
       cameraPlaceholder.classList.add('hidden');
       cameraOnBtn.disabled = true;
       cameraOffBtn.disabled = false;
+      awaitingFirstPrediction = true;
       startPolling();
     } catch (err) {
       console.error('Camera error:', err);
@@ -48,6 +73,8 @@
 
   function turnCameraOff() {
     stopPolling();
+    setPredictionStatusVisible(false);
+    awaitingFirstPrediction = false;
     if (stream) {
       stream.getTracks().forEach((t) => t.stop());
       stream = null;
@@ -73,29 +100,49 @@
     }
   }
 
+  /**
+   * One prediction cycle. Async — UI stays responsive during fetch.
+   * isRequestInFlight prevents overlapping POSTs.
+   */
   async function pollOnce() {
     if (!stream || webcam.readyState !== 4) return;
     if (isRequestInFlight) return;
 
     isRequestInFlight = true;
+    const firstThisSession = awaitingFirstPrediction;
+    setPredictionStatusVisible(
+      true,
+      firstThisSession ? MSG_WARMUP : MSG_PREDICTING
+    );
+
     try {
       const blob = await captureFrame();
       const data = await predict(blob);
       handleResult(data);
+      awaitingFirstPrediction = false;
     } catch (err) {
       console.error('Predict error:', err);
+      awaitingFirstPrediction = false;
     } finally {
+      setPredictionStatusVisible(false);
       isRequestInFlight = false;
     }
   }
 
+  /**
+   * Resize frame to 320×240 before JPEG — smaller upload for Render CPU.
+   */
   function captureFrame() {
-    captureCanvas.width = webcam.videoWidth;
-    captureCanvas.height = webcam.videoHeight;
+    captureCanvas.width = CAPTURE_WIDTH;
+    captureCanvas.height = CAPTURE_HEIGHT;
     const ctx = captureCanvas.getContext('2d');
-    ctx.drawImage(webcam, 0, 0);
+    ctx.drawImage(webcam, 0, 0, CAPTURE_WIDTH, CAPTURE_HEIGHT);
     return new Promise((resolve) => {
-      captureCanvas.toBlob(resolve, 'image/jpeg', 0.9);
+      captureCanvas.toBlob(
+        (blob) => resolve(blob),
+        'image/jpeg',
+        JPEG_QUALITY
+      );
     });
   }
 
