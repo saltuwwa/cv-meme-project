@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Qazaq Meme Vision</title>
+  <link rel="stylesheet" href="/static/style_deploy.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="page">
+    <header class="hero">
+      <h1 class="title">Qazaq Meme Vision 🤙</h1>
+      <p class="subtitle">See which meme matches your expression</p>
+    </header>
+
+    <!-- Instruction card -->
+    <section class="instruction-card">
+      <h2 class="instruction-heading">Try to recreate one of these four meme poses</h2>
+      <p class="instruction-text">
+        Turn on your camera and copy one of the meme poses below. The model will predict which meme you match and show the confidence score.
+      </p>
+      <div class="example-grid">
+        <div class="example-card">
+          <img src="/static/memes/salam-meme.jpg" alt="Salam">
+          <h3>Salam</h3>
+          <p>Raise your hand like a greeting</p>
+        </div>
+        <div class="example-card">
+          <img src="/static/memes/sleeps-meme.jpg" alt="Sleep">
+          <h3>Sleep</h3>
+          <p>Pretend to be sleeping</p>
+        </div>
+        <div class="example-card">
+          <img src="/static/memes/hmm-meme.jpg" alt="Hmm">
+          <h3>Hmm</h3>
+          <p>Make a thinking pose</p>
+        </div>
+        <div class="example-card">
+          <img src="/static/memes/cat_tongue-meme.jpg" alt="Cat Tongue">
+          <h3>Cat Tongue</h3>
+          <p>Make a playful cat-tongue face</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Demo area -->
+    <main class="demo-main">
+      <section class="panel camera-panel">
+        <h2 class="panel-title">Camera</h2>
+        <div class="camera-wrapper">
+          <video id="webcam" autoplay playsinline muted></video>
+          <canvas id="capture-canvas" hidden></canvas>
+          <div id="camera-placeholder" class="camera-placeholder">
+            <span class="placeholder-text">Click “Turn Camera On” to start</span>
+          </div>
+        </div>
+        <div class="camera-controls">
+          <button id="camera-on-btn" type="button" class="btn btn-primary">Turn Camera On</button>
+          <button id="camera-off-btn" type="button" class="btn btn-secondary" disabled>Turn Camera Off</button>
+        </div>
+      </section>
+
+      <section class="panel meme-panel">
+        <h2 class="panel-title">Your Meme / Prediction</h2>
+        <div id="placeholder" class="prediction-placeholder">
+          <p id="placeholder-message" class="placeholder-main">Make one of the 4 poses clearly.</p>
+          <p class="placeholder-hint">Confidence must reach 75% to show a meme.</p>
+        </div>
+        <div id="result" class="meme-result hidden">
+          <div id="result-meme" class="result-meme"></div>
+          <p id="result-class" class="result-class"></p>
+          <p id="result-confidence" class="result-confidence"></p>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p>salam · sleep · hmm · cat-tongue</p>
+    </footer>
+  </div>
+
+  <script src="/static/app_deploy.js"></script>
+</body>
+</html>
